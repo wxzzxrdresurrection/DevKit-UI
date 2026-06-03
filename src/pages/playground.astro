@@ -1,0 +1,252 @@
+---
+import Layout from '../layouts/Layout.astro'
+import ApiTester from '../components/ApiTester.tsx'
+
+const API = 'http://localhost:4200'
+---
+
+<Layout title="Playground">
+  <div class="mb-10">
+    <h1 class="text-3xl font-bold text-white mb-2">Playground</h1>
+    <p class="text-gray-400">Prueba cada herramienta directamente desde el navegador.</p>
+  </div>
+
+  <!-- Tabs -->
+  <div class="flex gap-1 bg-gray-900 border border-gray-800 rounded-lg p-1 mb-8" id="tabs">
+    {['img', 'text', 'fake', 'mock'].map(tab => (
+      <button
+        data-tab={tab}
+        class="tab-btn flex-1 text-sm py-2 px-3 rounded-md text-gray-400 hover:text-white transition-colors"
+      >
+        {tab}
+      </button>
+    ))}
+  </div>
+
+  <!-- IMG -->
+  <section id="panel-img" class="panel space-y-6">
+    <div>
+      <h2 class="text-white font-semibold text-lg mb-1">Imagen Placeholder</h2>
+      <p class="text-gray-400 text-sm mb-4">Genera imágenes on-the-fly con las dimensiones que necesites.</p>
+
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+        <div>
+          <label class="text-xs text-gray-500 mb-1 block">Width</label>
+          <input id="img-w" type="number" value="400" min="1" max="5000"
+            class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white outline-none focus:border-blue-500" />
+        </div>
+        <div>
+          <label class="text-xs text-gray-500 mb-1 block">Height</label>
+          <input id="img-h" type="number" value="300" min="1" max="5000"
+            class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white outline-none focus:border-blue-500" />
+        </div>
+        <div>
+          <label class="text-xs text-gray-500 mb-1 block">Color (hex)</label>
+          <input id="img-bg" type="text" value="1E3A5F"
+            class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white outline-none focus:border-blue-500" />
+        </div>
+        <div>
+          <label class="text-xs text-gray-500 mb-1 block">Formato</label>
+          <select id="img-fmt"
+            class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white outline-none focus:border-blue-500">
+            <option>jpeg</option>
+            <option>png</option>
+            <option>webp</option>
+          </select>
+        </div>
+      </div>
+
+      <ApiTester
+        id="tester-img"
+        defaultUrl={`${API}/img/400x300?bg=1E3A5F`}
+        client:load
+      />
+    </div>
+  </section>
+
+  <!-- TEXT -->
+  <section id="panel-text" class="panel space-y-6 hidden">
+    <div>
+      <h2 class="text-white font-semibold text-lg mb-1">Generador de Texto</h2>
+      <p class="text-gray-400 text-sm mb-4">Lorem ipsum en el formato y cantidad que necesites.</p>
+
+      <div class="grid grid-cols-3 gap-3 mb-4">
+        <div>
+          <label class="text-xs text-gray-500 mb-1 block">Tipo</label>
+          <select id="text-type"
+            class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white outline-none focus:border-blue-500">
+            <option value="sentences">sentences</option>
+            <option value="words">words</option>
+            <option value="paragraphs">paragraphs</option>
+          </select>
+        </div>
+        <div>
+          <label class="text-xs text-gray-500 mb-1 block">Cantidad</label>
+          <input id="text-count" type="number" value="5" min="1" max="100"
+            class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white outline-none focus:border-blue-500" />
+        </div>
+        <div>
+          <label class="text-xs text-gray-500 mb-1 block">Formato</label>
+          <select id="text-fmt"
+            class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white outline-none focus:border-blue-500">
+            <option value="plain">plain</option>
+            <option value="json">json</option>
+            <option value="html">html</option>
+          </select>
+        </div>
+      </div>
+
+      <ApiTester
+        id="tester-text"
+        defaultUrl={`${API}/text?type=sentences&count=5&format=json`}
+        client:load
+      />
+    </div>
+  </section>
+
+  <!-- FAKE -->
+  <section id="panel-fake" class="panel space-y-6 hidden">
+    <div>
+      <h2 class="text-white font-semibold text-lg mb-1">Datos Ficticios</h2>
+      <p class="text-gray-400 text-sm mb-4">Genera objetos JSON coherentes por schema.</p>
+
+      <div class="grid grid-cols-3 gap-3 mb-4">
+        <div>
+          <label class="text-xs text-gray-500 mb-1 block">Schema</label>
+          <select id="fake-schema"
+            class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white outline-none focus:border-blue-500">
+            <option value="user">user</option>
+            <option value="product">product</option>
+            <option value="post">post</option>
+            <option value="company">company</option>
+          </select>
+        </div>
+        <div>
+          <label class="text-xs text-gray-500 mb-1 block">Cantidad</label>
+          <input id="fake-count" type="number" value="3" min="1" max="100"
+            class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white outline-none focus:border-blue-500" />
+        </div>
+        <div>
+          <label class="text-xs text-gray-500 mb-1 block">Locale</label>
+          <select id="fake-locale"
+            class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white outline-none focus:border-blue-500">
+            <option value="en">en</option>
+            <option value="es">es</option>
+          </select>
+        </div>
+      </div>
+
+      <ApiTester
+        id="tester-fake"
+        defaultUrl={`${API}/fake/user?count=3&locale=en`}
+        client:load
+      />
+    </div>
+  </section>
+
+  <!-- MOCK -->
+  <section id="panel-mock" class="panel space-y-6 hidden">
+    <div>
+      <h2 class="text-white font-semibold text-lg mb-1">Mock API REST</h2>
+      <p class="text-gray-400 text-sm mb-4">Crea un proyecto, registra endpoints y consúmelos como una API real.</p>
+
+      <div class="space-y-4">
+        <div class="bg-gray-900 border border-gray-800 rounded-lg p-4">
+          <p class="text-xs text-gray-500 mb-3 uppercase tracking-wider">Paso 1 — Crear proyecto</p>
+          <ApiTester
+            id="tester-mock-create"
+            defaultUrl={`${API}/mock/create`}
+            method="POST"
+            client:load
+          />
+        </div>
+
+        <div class="bg-gray-900 border border-gray-800 rounded-lg p-4">
+          <p class="text-xs text-gray-500 mb-3 uppercase tracking-wider">Paso 2 — Registrar endpoint</p>
+          <p class="text-xs text-gray-600 mb-3">Pega el projectId del paso anterior en la URL</p>
+          <ApiTester
+            id="tester-mock-register"
+            defaultUrl={`${API}/mock/{projectId}/register`}
+            method="POST"
+            body={{ path: '/users', method: 'GET', status: 200, response: { users: [{ id: 1, name: 'Luis' }] }, delay: 0, headers: {} }}
+            client:load
+          />
+        </div>
+
+        <div class="bg-gray-900 border border-gray-800 rounded-lg p-4">
+          <p class="text-xs text-gray-500 mb-3 uppercase tracking-wider">Paso 3 — Consumir endpoint</p>
+          <ApiTester
+            id="tester-mock-run"
+            defaultUrl={`${API}/run/{projectId}/users`}
+            client:load
+          />
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  // Tabs
+  const tabs = document.querySelectorAll('.tab-btn')
+  const panels = document.querySelectorAll('.panel')
+
+  function activate(tab: string) {
+    tabs.forEach(t => {
+      const isActive = t.getAttribute('data-tab') === tab
+      t.classList.toggle('bg-gray-800', isActive)
+      t.classList.toggle('text-white', isActive)
+      t.classList.toggle('text-gray-400', !isActive)
+    })
+    panels.forEach(p => {
+      p.classList.toggle('hidden', p.id !== `panel-${tab}`)
+    })
+  }
+
+  tabs.forEach(t => t.addEventListener('click', () => activate(t.getAttribute('data-tab')!)))
+
+  // Activar tab desde hash
+  const hash = window.location.hash.replace('#', '')
+  activate(['img', 'text', 'fake', 'mock'].includes(hash) ? hash : 'img')
+
+  // Sync inputs con ApiTester URLs
+  const API = 'http://localhost:4200'
+
+  function syncInput(inputId: string, transform: () => string) {
+    const el = document.getElementById(inputId)
+    el?.addEventListener('input', () => {
+      const testerInput = document.querySelector(`#panel-${inputId.split('-')[0]} input[type="text"]`) as HTMLInputElement
+      if (testerInput) testerInput.value = transform()
+    })
+  }
+
+  syncInput('img-w', () => {
+    const w = (document.getElementById('img-w') as HTMLInputElement).value
+    const h = (document.getElementById('img-h') as HTMLInputElement).value
+    const bg = (document.getElementById('img-bg') as HTMLInputElement).value
+    const fmt = (document.getElementById('img-fmt') as HTMLSelectElement).value
+    return `${API}/img/${w}x${h}?bg=${bg}&format=${fmt}`
+  })
+
+  syncInput('img-h', () => {
+    const w = (document.getElementById('img-w') as HTMLInputElement).value
+    const h = (document.getElementById('img-h') as HTMLInputElement).value
+    const bg = (document.getElementById('img-bg') as HTMLInputElement).value
+    const fmt = (document.getElementById('img-fmt') as HTMLSelectElement).value
+    return `${API}/img/${w}x${h}?bg=${bg}&format=${fmt}`
+  })
+
+  syncInput('text-type', () => {
+    const type = (document.getElementById('text-type') as HTMLSelectElement).value
+    const count = (document.getElementById('text-count') as HTMLInputElement).value
+    const fmt = (document.getElementById('text-fmt') as HTMLSelectElement).value
+    return `${API}/text?type=${type}&count=${count}&format=${fmt}`
+  })
+
+  syncInput('fake-schema', () => {
+    const schema = (document.getElementById('fake-schema') as HTMLSelectElement).value
+    const count = (document.getElementById('fake-count') as HTMLInputElement).value
+    const locale = (document.getElementById('fake-locale') as HTMLSelectElement).value
+    return `${API}/fake/${schema}?count=${count}&locale=${locale}`
+  })
+</script>
