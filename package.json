@@ -22,7 +22,7 @@
     "react-dom": "^19.2.7"
   },
   "devDependencies": {
-    "@astrojs/tailwind": "^6.0.2",
+    "@tailwindcss/postcss": "^4.3.0",
     "tailwindcss": "^4.3.0"
   }
 }
