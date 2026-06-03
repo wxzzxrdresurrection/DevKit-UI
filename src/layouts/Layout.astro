@@ -7,7 +7,7 @@ interface Props {
 }
 
 const { title, description = 'Toolkit HTTP para desarrolladores full-stack' } = Astro.props
-const PUBLIC_API_URL = import.meta.env.PUBLIC_API_URL || 'http://localhost:3000'
+const PUBLIC_API_URL = import.meta.env.PUBLIC_API_URL
 ---
 
 <!doctype html>
@@ -22,12 +22,12 @@ const PUBLIC_API_URL = import.meta.env.PUBLIC_API_URL || 'http://localhost:3000'
   <body class="min-h-screen bg-gray-950 text-gray-100 font-sans">
     <nav class="border-b border-gray-800 px-6 py-4">
       <div class="max-w-5xl mx-auto flex items-center justify-between">
-        <a href="/" class="text-white font-bold text-xl tracking-tight">
+        <a href={PUBLIC_API_URL} class="text-white font-bold text-xl tracking-tight">
           Dev<span class="text-blue-400">Kit</span>
         </a>
         <div class="flex items-center gap-6 text-sm text-gray-400">
-          <a href="/playground" class="hover:text-white transition-colors">Playground</a>
-          <a href={PUBLIC_API_URL + '/docs'} target="_blank" class="hover:text-white transition-colors">API Docs</a>
+          <a href={`${PUBLIC_API_URL}/playground`} class="hover:text-white transition-colors">Playground</a>
+          <a href={`${PUBLIC_API_URL}/docs`} target="_blank" class="hover:text-white transition-colors">API Docs</a>
           <a href="https://github.com/wxzzxrdresurrection/DevKit-API" target="_blank" class="hover:text-white transition-colors">GitHub</a>
         </div>
       </div>

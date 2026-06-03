@@ -50,7 +50,8 @@ const dotMap: Record<string, string> = {
   amber:   'bg-amber-400',
 }
 
-const PUBLIC_API_URL = import.meta.env.PUBLIC_API_URL || 'http://localhost:3000'
+const PUBLIC_API_URL = import.meta.env.PUBLIC_API_URL
+console.log('PUBLIC_API_URL:', PUBLIC_API_URL)
 ---
 
 <Layout title="Home">
@@ -73,13 +74,13 @@ const PUBLIC_API_URL = import.meta.env.PUBLIC_API_URL || 'http://localhost:3000'
 
     <div class="flex items-center justify-center gap-4">
       <a
-        href="/playground"
+        href={`${PUBLIC_API_URL}/playground`}
         class="bg-blue-500 hover:bg-blue-400 text-white font-medium px-6 py-2.5 rounded-lg transition-colors"
       >
         Abrir playground
       </a>
       <a
-        href={PUBLIC_API_URL + '/docs'}
+        href={`${PUBLIC_API_URL}/docs`}
         target="_blank"
         class="text-gray-400 hover:text-white border border-gray-700 hover:border-gray-500 px-6 py-2.5 rounded-lg transition-colors"
       >
@@ -94,7 +95,7 @@ const PUBLIC_API_URL = import.meta.env.PUBLIC_API_URL || 'http://localhost:3000'
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       {tools.map(tool => (
         <a
-          href={tool.href}
+          href={`${PUBLIC_API_URL}${tool.href.replace(/^\//, '')}`}
           class="group block bg-gray-900 border border-gray-800 hover:border-gray-600 rounded-xl p-6 transition-all"
         >
           <div class="flex items-start justify-between mb-3">
