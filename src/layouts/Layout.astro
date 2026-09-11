@@ -1,13 +1,28 @@
 ---
-import "../styles/global.css";
+import '@fontsource-variable/archivo'
+import '@fontsource-variable/jetbrains-mono'
+import '../styles/global.css'
+import Logo from '../components/Logo.astro'
+import ThemeToggle from '../components/ThemeToggle.astro'
+import ApiStatus from '../components/ApiStatus.astro'
+import { API_URL, SITE, apiHost } from '../lib/config'
 
 interface Props {
   title: string
   description?: string
+  /** Etiqueta de unidad que aparece en la barra de telemetria. */
+  unit?: string
 }
 
-const { title, description = 'Toolkit HTTP para desarrolladores full-stack' } = Astro.props
-const PUBLIC_API_URL = import.meta.env.PUBLIC_API_URL
+const { title, description = SITE.description, unit = 'INDEX' } = Astro.props
+
+const nav = [
+  { label: 'Playground', href: '/playground', external: false },
+  { label: 'API Docs', href: `${API_URL}/docs`, external: true },
+  { label: 'GitHub', href: SITE.repo, external: true },
+]
+
+const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://devkit.dev')
 ---
 
 <!doctype html>
@@ -15,31 +30,147 @@ const PUBLIC_API_URL = import.meta.env.PUBLIC_API_URL
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title} — {SITE.unit}</title>
     <meta name="description" content={description} />
-    <title>{title} · DevKit</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={canonical} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={`${title} — ${SITE.unit}`} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content="/og.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={`${title} — ${SITE.unit}`} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content="/og.png" />
+
+    <!-- Resuelve el tema antes del primer paint para evitar el flash. -->
+    <script is:inline>
+      ;(() => {
+        try {
+          const saved = localStorage.getItem('devkit-theme')
+          const dark = saved
+            ? saved === 'dark'
+            : window.matchMedia('(prefers-color-scheme: dark)').matches
+          document.documentElement.classList.toggle('dark', dark)
+        } catch {
+          /* localStorage bloqueado: se queda en light */
+        }
+      })()
+    </script>
   </head>
-  <body class="min-h-screen bg-gray-950 text-gray-100 font-sans">
-    <nav class="border-b border-gray-800 px-6 py-4">
-      <div class="max-w-5xl mx-auto flex items-center justify-between">
-        <a href="/" class="text-white font-bold text-xl tracking-tight">
-          Dev<span class="text-blue-400">Kit</span>
+
+  <body class="min-h-screen flex flex-col bg-bg text-fg antialiased">
+    <!-- Degradacion analogica -->
+    <div class="fx-overlay fx-grain" aria-hidden="true"></div>
+    <div class="fx-overlay fx-scan" aria-hidden="true"></div>
+
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[10000] btn btn-primary"
+    >
+      Saltar al contenido
+    </a>
+
+    <!-- Banda de peligro -->
+    <div class="hazard h-1.5 w-full" aria-hidden="true"></div>
+
+    <header class="border-b border-line">
+      <div
+        class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-3.5 md:px-8"
+      >
+        <a href="/" class="group" aria-label={`${SITE.name} — inicio`}>
+          <Logo size={26} />
         </a>
-        <div class="flex items-center gap-6 text-sm text-gray-400">
-          <a href="/playground" class="hover:text-white transition-colors">Playground</a>
-          <a href={`${PUBLIC_API_URL}/docs`} target="_blank" class="hover:text-white transition-colors">API Docs</a>
-          <a href="https://github.com/wxzzxrdresurrection/DevKit-API" target="_blank" class="hover:text-white transition-colors">GitHub</a>
-        </div>
+
+        <nav class="flex items-center gap-1" aria-label="Principal">
+          {
+            nav.map((item) => (
+              <a
+                href={item.href}
+                target={item.external ? '_blank' : undefined}
+                rel={item.external ? 'noreferrer' : undefined}
+                class="t-meta hidden px-3 py-2 text-fg-muted transition-colors hover:bg-fg hover:text-bg sm:block"
+              >
+                {item.label}
+              </a>
+            ))
+          }
+          <span class="mx-1 hidden h-5 w-px bg-line sm:block" aria-hidden="true"></span>
+          <ThemeToggle />
+        </nav>
       </div>
+    </header>
+
+    <!-- Navegacion movil: los enlaces del header se ocultan bajo sm -->
+    <nav class="grid-hairline grid-cols-3 border-x-0 border-t-0 sm:hidden" aria-label="Principal (movil)">
+      {
+        nav.map((item) => (
+          <a
+            href={item.href}
+            target={item.external ? '_blank' : undefined}
+            rel={item.external ? 'noreferrer' : undefined}
+            class="t-meta px-2 py-2.5 text-center text-fg-muted"
+          >
+            {item.label}
+          </a>
+        ))
+      }
     </nav>
 
-    <main class="max-w-5xl mx-auto px-6 py-12">
+    <!-- Barra de telemetria -->
+    <div class="border-b border-line bg-surface">
+      <div
+        class="mx-auto flex max-w-6xl flex-wrap items-center gap-x-5 gap-y-1 px-5 py-1.5 md:px-8"
+      >
+        <span class="t-label text-fg-muted">UNIT / {unit}</span>
+        <span class="t-label text-fg-muted">REV {SITE.rev}</span>
+        <span class="t-label hidden text-fg-muted sm:inline">NODE / {apiHost()}</span>
+        <ApiStatus />
+      </div>
+    </div>
+
+    <main id="main" class="mx-auto w-full max-w-6xl flex-1 px-5 md:px-8">
       <slot />
     </main>
 
-    <footer class="border-t border-gray-800 px-6 py-6 mt-12">
-      <div class="max-w-5xl mx-auto text-center text-sm text-gray-600">
-        DevKit · Hecho con Hono, Prisma y Astro
+    <footer class="mt-24 border-t border-line">
+      <div
+        class="mx-auto grid max-w-6xl gap-6 px-5 py-8 md:grid-cols-3 md:px-8"
+      >
+        <div>
+          <Logo size={22} />
+          <p class="t-body mt-3 max-w-[30ch]">
+            {SITE.tagline}
+          </p>
+        </div>
+
+        <dl class="t-meta space-y-1.5 text-fg-muted">
+          <div class="flex justify-between border-b border-line pb-1.5">
+            <dt class="text-fg-faint">Runtime</dt>
+            <dd>Hono · Prisma</dd>
+          </div>
+          <div class="flex justify-between border-b border-line pb-1.5">
+            <dt class="text-fg-faint">Frontend</dt>
+            <dd>Astro · React</dd>
+          </div>
+          <div class="flex justify-between">
+            <dt class="text-fg-faint">Auth</dt>
+            <dd class="text-accent">Ninguna</dd>
+          </div>
+        </dl>
+
+        <div class="t-meta flex flex-col gap-1.5 text-fg-muted md:items-end">
+          <a href="/playground" class="hover:text-accent">Playground</a>
+          <a href={`${API_URL}/docs`} target="_blank" rel="noreferrer" class="hover:text-accent">
+            API Docs
+          </a>
+          <a href={SITE.repoUi} target="_blank" rel="noreferrer" class="hover:text-accent">
+            Codigo fuente
+          </a>
+          <span class="mt-2 text-fg-faint">© {new Date().getFullYear()} DEVKIT®</span>
+        </div>
       </div>
     </footer>
   </body>

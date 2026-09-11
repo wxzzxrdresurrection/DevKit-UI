@@ -1,0 +1,35 @@
+---
+import { API_URL, apiHost } from '../lib/config'
+---
+
+<span class="t-label ml-auto flex items-center gap-1.5 text-fg-muted" data-api-status>
+  <span class="h-1.5 w-1.5 bg-fg-faint" data-dot aria-hidden="true"></span>
+  <span data-label>SONDEANDO</span>
+</span>
+
+<script define:vars={{ API_URL, HOST: apiHost() }}>
+  // Sonda real contra la API. Si no responde lo decimos, no fingimos verde.
+  const root = document.querySelector('[data-api-status]')
+  const dot = root?.querySelector('[data-dot]')
+  const label = root?.querySelector('[data-label]')
+
+  function paint(state, text, title) {
+    if (!dot || !label || !root) return
+    dot.className = `h-1.5 w-1.5 ${state}`
+    label.textContent = text
+    root.setAttribute('title', title)
+  }
+
+  const controller = new AbortController()
+  const timeout = setTimeout(() => controller.abort(), 5000)
+
+  fetch(`${API_URL}/`, { method: 'GET', signal: controller.signal, cache: 'no-store' })
+    .then((res) => {
+      paint(res.ok ? 'bg-signal' : 'bg-accent', res.ok ? 'ONLINE' : `HTTP ${res.status}`, `${HOST} · HTTP ${res.status}`)
+    })
+    .catch(() => {
+      // Puede ser caida o CORS: "sin respuesta" es cierto en ambos casos.
+      paint('bg-accent', 'SIN RESPUESTA', `${HOST} no respondio`)
+    })
+    .finally(() => clearTimeout(timeout))
+</script>

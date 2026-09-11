@@ -1,17 +1,34 @@
+<div align="center">
+
+<img src="public/favicon.svg" width="56" alt="" />
+
 # DevKit UI
 
-Interfaz web para [DevKit API](https://github.com/wxzzxrdresurrection/devkit-api) — un playground interactivo donde cualquier desarrollador puede probar las herramientas desde el navegador sin instalar nada.
+**Toolkit HTTP para devs que van rápido.**
 
-**API:** [devkit-api](https://github.com/wxzzxrdresurrection/devkit-api) · **Demo:** [devkit-demo](https://devkit-api-production-0fa6.up.railway.app/)
+Interfaz web de [DevKit API](https://github.com/wxzzxrdresurrection/devkit-api) — un
+playground donde pruebas las herramientas desde el navegador, sin instalar nada.
+
+[API](https://github.com/wxzzxrdresurrection/devkit-api) ·
+[Demo](https://devkit-api-production-0fa6.up.railway.app/) ·
+[Identidad visual](BRAND.md)
+
+</div>
 
 ---
 
 ## Stack
 
-- **Framework:** Astro 5
-- **Componentes interactivos:** React (islas)
-- **Estilos:** Tailwind CSS
-- **Deploy:** Vercel
+| Capa | Qué |
+|------|-----|
+| Framework | Astro 6 (salida estática) |
+| Islas interactivas | React 19 |
+| Estilos | Tailwind CSS 4 (`@theme inline`, sin `tailwind.config`) |
+| Tipografía | Archivo + JetBrains Mono, self-hosted vía `@fontsource-variable` |
+| Deploy | Vercel |
+
+Sin CDNs de terceros: las fuentes se sirven desde el propio bundle.
+
 ---
 
 ## Estructura
@@ -19,13 +36,19 @@ Interfaz web para [DevKit API](https://github.com/wxzzxrdresurrection/devkit-api
 ```
 src/
 ├── layouts/
-│   └── Layout.astro        # Layout base con nav y footer
+│   └── Layout.astro        # Shell: banda de peligro, header, telemetría, footer
 ├── pages/
-│   ├── index.astro         # Landing con las 4 herramientas
-│   └── playground.astro    # Playground con tabs por herramienta
-└── components/
-    ├── ApiTester.tsx        # Isla React — ejecuta requests y muestra respuesta
-    └── CodeBlock.tsx        # Muestra URLs copiables
+│   ├── index.astro         # Landing con las 4 unidades
+│   ├── playground.astro    # Playground con una pestaña por herramienta
+│   └── 404.astro
+├── components/
+│   ├── ApiTester.tsx       # Isla React — ejecuta el request y muestra la respuesta
+│   ├── ApiStatus.astro     # Sonda real contra la API (no es un adorno)
+│   ├── ThemeToggle.astro   # Papel <-> CRT, persistido en localStorage
+│   └── Logo.astro          # Marca: glifo + wordmark
+├── data/tools.ts           # Las 4 herramientas, compartidas entre páginas
+├── lib/config.ts           # API_URL con fallback + metadatos del sitio
+└── styles/global.css       # Tokens de diseño y capa de componentes
 ```
 
 ---
@@ -34,38 +57,48 @@ src/
 
 ### Landing (`/`)
 
-Presenta las cuatro herramientas con descripción, endpoint de ejemplo y link al playground. Página completamente estática — sin JavaScript en el cliente.
+Las cuatro herramientas con su endpoint, qué devuelven y un enlace directo a su
+pestaña del playground.
 
 ### Playground (`/playground`)
 
-Interfaz interactiva con una tab por herramienta. Cada tab tiene controles para configurar los parámetros y un `ApiTester` que ejecuta el request y muestra la respuesta en tiempo real.
+Una pestaña por herramienta. Los controles ajustan los parámetros y reescriben
+la URL del tester en vivo; la URL resultante es copiable y funciona igual en tu
+terminal.
 
-Soporta navegación directa por hash:
-- `/playground#img` → tab de imagen placeholder
-- `/playground#text` → tab de texto Lorem
-- `/playground#fake` → tab de datos ficticios
-- `/playground#mock` → tab de Mock API
+Los controles viven fuera de la isla de React, así que se comunican con ella por
+un evento `devkit:url` en vez de escribir el `value` del input (React ignoraría
+ese cambio y revertiría al siguiente render).
+
+Navegación directa por hash:
+
+| Hash | Pestaña |
+|------|---------|
+| `/playground#img` | Imagen placeholder |
+| `/playground#text` | Texto Lorem |
+| `/playground#fake` | Datos ficticios |
+| `/playground#mock` | Mock API |
+
 ---
 
 ## Correr en local
 
 ```bash
-# 1. Clonar el repo
 git clone https://github.com/wxzzxrdresurrection/devkit-ui.git
 cd devkit-ui
 
-# 2. Instalar dependencias
 pnpm install
 
-# 3. Configurar variables de entorno
-cp .env.example .env
-# Editar PUBLIC_API_URL si la API no corre en localhost:3000
+cp .env.example .env      # ajusta PUBLIC_API_URL si hace falta
 
-# 4. Iniciar servidor de desarrollo
-pnpm dev
+pnpm dev                  # http://localhost:4321
 ```
 
-La UI corre en `http://localhost:4321`. Requiere que [devkit-api](https://github.com/wxzzxrdresurrection/devkit-api) esté corriendo en local o apuntar `PUBLIC_API_URL` a la instancia en producción.
+Necesita [devkit-api](https://github.com/wxzzxrdresurrection/devkit-api) corriendo
+en local, o apunta `PUBLIC_API_URL` a la instancia de producción.
+
+El indicador de la barra superior sondea la API de verdad: si marca
+`SIN RESPUESTA`, o está caída o el CORS no deja pasar al navegador.
 
 ---
 
@@ -74,3 +107,15 @@ La UI corre en `http://localhost:4321`. Requiere que [devkit-api](https://github
 | Variable | Descripción | Default |
 |----------|-------------|---------|
 | `PUBLIC_API_URL` | URL base de la API | `http://localhost:3000` |
+
+Hay fallback en `src/lib/config.ts`, así que si falta la variable el sitio sigue
+renderizando contra `localhost:3000` en vez de mostrar `undefined/...`.
+
+---
+
+## Diseño
+
+La identidad (color, tipografía, retícula, reglas) está documentada en
+**[BRAND.md](BRAND.md)**. Resumen de una línea: brutalismo industrial, un solo
+acento rojo, cero `border-radius`, y dos sustratos — papel industrial en claro,
+terminal CRT en oscuro.
