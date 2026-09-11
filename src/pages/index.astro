@@ -6,19 +6,20 @@ import { API_URL, SITE } from '../lib/config'
 const specs = [
   { k: 'Endpoints', v: '04' },
   { k: 'Auth', v: 'NO' },
-  { k: 'Rate limit', v: 'NO' },
-  { k: 'Instalacion', v: 'NO' },
+  { k: 'Arranque', v: '1 CMD' },
+  { k: 'Rate limit', v: '60/MIN' },
 ]
 
 const sample = [
-  { c: '# 5 usuarios ficticios en espanol', t: 'comment' },
+  { c: '# levanta la API y su Postgres en tu maquina', t: 'comment' },
+  { c: 'git clone https://github.com/wxzzxrdresurrection/devkit-api', t: 'cmd' },
+  { c: 'cd devkit-api && docker compose up', t: 'cmd' },
+  { c: '', t: 'blank' },
+  { c: '# ya es tuya: 5 usuarios ficticios en espanol', t: 'comment' },
   { c: `curl ${API_URL}/fake/user?count=5&locale=es`, t: 'cmd' },
   { c: '', t: 'blank' },
-  { c: '# imagen 800x400 con fondo propio', t: 'comment' },
+  { c: '# imagen de 800x400 con fondo propio', t: 'comment' },
   { c: `curl ${API_URL}/img/800x400?bg=E61919&text=Banner`, t: 'cmd' },
-  { c: '', t: 'blank' },
-  { c: '# 3 parrafos de lorem en HTML', t: 'comment' },
-  { c: `curl ${API_URL}/text?type=paragraphs&count=3&format=html`, t: 'cmd' },
 ]
 ---
 
@@ -26,11 +27,11 @@ const sample = [
   <!-- ============ HERO ============ -->
   <section class="border-b border-line py-16 md:py-24">
     <p class="t-label mb-6 flex flex-wrap items-center gap-2">
-      <span class="bg-accent px-1.5 py-0.5 text-accent-fg">API PUBLICA</span>
+      <span class="bg-accent px-1.5 py-0.5 text-accent-fg">CORRE EN TU MAQUINA</span>
       <span class="text-fg-faint">///</span>
       <span>SIN AUTH</span>
       <span class="text-fg-faint">///</span>
-      <span>SIN SETUP</span>
+      <span>SIN CUENTA</span>
     </p>
 
     <h1 class="t-display t-h1">
@@ -42,18 +43,19 @@ const sample = [
 
     <div class="mt-10 grid gap-8 md:grid-cols-[1fr_auto] md:items-end">
       <p class="t-body max-w-[54ch]">
-        Imagenes placeholder, lorem ipsum, datos ficticios y mock APIs.
-        Todo servido desde una URL que puedes pegar en el navegador,
-        en un <samp class="text-fg">curl</samp> o en tu <samp class="text-fg">fetch</samp>.
+        Imagenes placeholder, lorem ipsum, datos ficticios y mock APIs,
+        servidos desde tu propia maquina con un
+        <samp class="text-fg">docker compose up</samp>. Sin cuenta, sin cuotas
+        y sin mandar tus datos a ningun sitio.
       </p>
 
       <div class="flex flex-wrap gap-2">
-        <a href="/playground" class="btn btn-primary">
-          Abrir playground
+        <a href="#arranque" class="btn btn-primary">
+          Como levantarlo
           <span aria-hidden="true">&gt;&gt;</span>
         </a>
-        <a href={`${API_URL}/docs`} target="_blank" rel="noreferrer" class="btn btn-ghost">
-          API Docs
+        <a href="/playground" class="btn btn-ghost">
+          Playground
         </a>
       </div>
     </div>
@@ -120,9 +122,9 @@ const sample = [
   </section>
 
   <!-- ============ TERMINAL ============ -->
-  <section class="border border-line">
+  <section id="arranque" class="scroll-mt-8 border border-line">
     <header class="flex items-center justify-between gap-4 border-b border-line bg-surface px-4 py-2">
-      <span class="t-label text-fg">/// ARRANQUE RAPIDO</span>
+      <span class="t-label text-fg">/// LEVANTARLO EN TU MAQUINA</span>
       <span class="t-label text-fg-muted">SH</span>
     </header>
 
@@ -147,15 +149,15 @@ const sample = [
   <!-- ============ CIERRE ============ -->
   <section class="mt-16 border-t-2 border-line-hard pt-10">
     <div class="grid gap-6 md:grid-cols-[1fr_auto] md:items-center">
-      <h2 class="t-display t-h2 max-w-[16ch]">
-        Pruebalo sin<br />escribir una linea
+      <h2 class="t-display t-h2 max-w-[18ch]">
+        Pruebalo antes<br />de instalarlo
       </h2>
       <a href="/playground" class="btn btn-primary justify-self-start">
         Ir al playground <span aria-hidden="true">&gt;&gt;</span>
       </a>
     </div>
     <p class="t-label mt-8 text-fg-faint">
-      {SITE.unit}® / REV {SITE.rev} / BUILD ESTATICO / SIN DEPENDENCIAS EXTERNAS
+      {SITE.unit}® / REV {SITE.rev} / SELF-HOSTED / MIT
     </p>
   </section>
 </Layout>

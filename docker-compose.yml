@@ -1,0 +1,53 @@
+# Levanta TODO el stack de DevKit en tu maquina:
+#
+#   docker compose up
+#
+# UI   -> http://localhost:4321
+# API  -> http://localhost:3200
+# Docs -> http://localhost:3200/docs
+#
+# No necesitas Node ni Postgres instalados.
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: devkit
+      POSTGRES_PASSWORD: devkit
+      POSTGRES_DB: devkit
+    volumes:
+      - devkit-db:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U devkit -d devkit']
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  api:
+    # Docker construye directamente desde el repo de la API: no hace falta
+    # clonarlo aparte. Si prefieres tenerlo en local, cambia esta linea por
+    # `build: ../devkit-api`.
+    build: https://github.com/wxzzxrdresurrection/devkit-api.git
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://devkit:devkit@db:5432/devkit
+      PORT: '3200'
+    ports:
+      - '3200:3200'
+
+  ui:
+    build:
+      context: .
+      args:
+        # El navegador del usuario llama a la API en el host, no dentro de la
+        # red de compose.
+        PUBLIC_API_URL: http://localhost:3200
+    depends_on:
+      - api
+    ports:
+      - '4321:80'
+
+volumes:
+  devkit-db:

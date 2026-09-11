@@ -4,9 +4,9 @@ export const API_URL: string = import.meta.env.PUBLIC_API_URL ?? 'http://localho
 export const SITE = {
   name: 'DevKit',
   unit: 'DEVKIT',
-  tagline: 'Toolkit HTTP para devs que van rapido',
+  tagline: 'Toolkit HTTP que corre en tu maquina',
   description:
-    'Imagenes placeholder, lorem ipsum, datos ficticios y mock APIs servidos desde una URL. Sin instalacion, sin cuenta, sin auth.',
+    'Imagenes placeholder, lorem ipsum, datos ficticios y mock APIs, servidos desde tu propia maquina con un docker compose up. Sin cuenta, sin cuotas, sin auth.',
   rev: '0.1.0',
   repo: 'https://github.com/wxzzxrdresurrection/DevKit-API',
   repoUi: 'https://github.com/wxzzxrdresurrection/devkit-ui',

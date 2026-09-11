@@ -4,13 +4,14 @@
 
 # DevKit UI
 
-**Toolkit HTTP para devs que van rápido.**
+**Toolkit HTTP que corre en tu máquina.**
 
-Interfaz web de [DevKit API](https://github.com/wxzzxrdresurrection/devkit-api) — un
-playground donde pruebas las herramientas desde el navegador, sin instalar nada.
+Playground web de [DevKit API](https://github.com/wxzzxrdresurrection/devkit-api).
+Imágenes placeholder, lorem ipsum, datos ficticios y mock APIs — servidos desde tu
+propio equipo, sin cuenta y sin cuotas.
 
 [API](https://github.com/wxzzxrdresurrection/devkit-api) ·
-[Demo](https://devkit-api-production-0fa6.up.railway.app/) ·
+[Demo hospedada](https://devkit-api-production-0fa6.up.railway.app/) ·
 [Identidad visual](BRAND.md)
 
 </div>
@@ -81,24 +82,41 @@ Navegación directa por hash:
 
 ---
 
-## Correr en local
+## Arrancar
+
+### Todo el stack con Docker (recomendado)
+
+Levanta UI, API y PostgreSQL cableados entre sí. No necesitas Node ni Postgres
+instalados:
 
 ```bash
 git clone https://github.com/wxzzxrdresurrection/devkit-ui.git
 cd devkit-ui
-
-pnpm install
-
-cp .env.example .env      # ajusta PUBLIC_API_URL si hace falta
-
-pnpm dev                  # http://localhost:4321
+docker compose up
 ```
 
-Necesita [devkit-api](https://github.com/wxzzxrdresurrection/devkit-api) corriendo
-en local, o apunta `PUBLIC_API_URL` a la instancia de producción.
+| Servicio | URL |
+|----------|-----|
+| UI | http://localhost:4321 |
+| API | http://localhost:3200 |
+| Docs | http://localhost:3200/docs |
 
-El indicador de la barra superior sondea la API de verdad: si marca
-`SIN RESPUESTA`, o está caída o el CORS no deja pasar al navegador.
+`docker-compose.yml` construye la API directamente desde su repo, así que no hace
+falta clonarla aparte. Si prefieres tenerla en local, cambia esa línea a
+`build: ../devkit-api`.
+
+### Solo la UI, en modo desarrollo
+
+```bash
+pnpm install
+cp .env.example .env       # ajusta PUBLIC_API_URL si tu API no está en 3200
+pnpm dev                   # http://localhost:4321
+```
+
+Necesita la [API](https://github.com/wxzzxrdresurrection/devkit-api) corriendo.
+Tres de sus cuatro herramientas (`/img`, `/text`, `/fake`) **no necesitan base de
+datos**, así que para eso te basta con `pnpm dev` en el repo de la API. Solo los
+mocks requieren PostgreSQL.
 
 ---
 
