@@ -1,0 +1,41 @@
+---
+interface Props {
+  /** Tamano del glifo en px. El wordmark escala con el. */
+  size?: number
+  showWordmark?: boolean
+  class?: string
+}
+
+const { size = 26, showWordmark = true, class: className = '' } = Astro.props
+---
+
+<span class={`inline-flex items-center gap-2.5 ${className}`}>
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 32 32"
+    aria-hidden="true"
+    class="shrink-0"
+  >
+    <rect width="32" height="32" fill="var(--brand)"></rect>
+    <path
+      d="M7 8.5 13.5 16 7 23.5"
+      fill="none"
+      stroke="#f4f4f0"
+      stroke-width="3.2"
+      stroke-linecap="square"
+      stroke-linejoin="miter"></path>
+    <rect x="16.5" y="20.4" width="9" height="3.1" fill="#f4f4f0"></rect>
+  </svg>
+
+  {
+    showWordmark && (
+      <span
+        class="t-display leading-none"
+        style={`font-size:${size * 0.66}px`}
+      >
+        Devkit<span class="text-brand">.</span>
+      </span>
+    )
+  }
+</span>

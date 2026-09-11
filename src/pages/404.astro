@@ -1,0 +1,22 @@
+---
+import Layout from '../layouts/Layout.astro'
+---
+
+<Layout title="404" unit="ERR/404" description="Ruta no encontrada en DevKit.">
+  <section class="py-20 md:py-32">
+    <p class="t-label mb-6 text-accent">/// SENAL PERDIDA</p>
+
+    <h1 class="t-display leading-[0.8]" style="font-size:clamp(5rem,26vw,18rem)">404</h1>
+
+    <div class="mt-10 grid gap-8 border-t-2 border-line-hard pt-8 md:grid-cols-[1fr_auto] md:items-end">
+      <p class="t-body max-w-[50ch]">
+        La ruta que pediste no existe en esta unidad. Puede que el endpoint
+        viva en la API y no en la UI, o que el enlace este roto.
+      </p>
+      <div class="flex flex-wrap gap-2">
+        <a href="/" class="btn btn-primary">Volver al index</a>
+        <a href="/playground" class="btn btn-ghost">Playground</a>
+      </div>
+    </div>
+  </section>
+</Layout>

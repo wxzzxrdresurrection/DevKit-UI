@@ -1,0 +1,36 @@
+---
+// Conmuta el sustrato: papel industrial (light) <-> terminal CRT (dark).
+---
+
+<button
+  id="theme-toggle"
+  type="button"
+  class="t-meta flex items-center gap-2 border border-line px-2.5 py-1.5 text-fg-muted transition-colors hover:border-line-hard hover:text-fg"
+  aria-label="Cambiar tema"
+>
+  <span class="h-2 w-2 bg-accent" aria-hidden="true"></span>
+  <span data-theme-label>PAPER</span>
+</button>
+
+<script>
+  const btn = document.getElementById('theme-toggle')
+  const label = btn?.querySelector('[data-theme-label]')
+
+  function paint() {
+    const dark = document.documentElement.classList.contains('dark')
+    if (label) label.textContent = dark ? 'CRT' : 'PAPER'
+    btn?.setAttribute('aria-pressed', String(dark))
+  }
+
+  btn?.addEventListener('click', () => {
+    const dark = document.documentElement.classList.toggle('dark')
+    try {
+      localStorage.setItem('devkit-theme', dark ? 'dark' : 'light')
+    } catch {
+      /* sin persistencia si localStorage esta bloqueado */
+    }
+    paint()
+  })
+
+  paint()
+</script>
