@@ -23,7 +23,8 @@ import { API_URL, apiHost } from '../lib/config'
   const controller = new AbortController()
   const timeout = setTimeout(() => controller.abort(), 5000)
 
-  fetch(`${API_URL}/`, { method: 'GET', signal: controller.signal, cache: 'no-store' })
+  // La API no sirve `/` (404); /openapi.json siempre existe y no toca la base de datos.
+  fetch(`${API_URL}/openapi.json`, { method: 'GET', signal: controller.signal, cache: 'no-store' })
     .then((res) => {
       paint(res.ok ? 'bg-signal' : 'bg-accent', res.ok ? 'ONLINE' : `HTTP ${res.status}`, `${HOST} · HTTP ${res.status}`)
     })

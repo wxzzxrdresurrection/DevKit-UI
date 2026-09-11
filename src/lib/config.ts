@@ -1,5 +1,5 @@
 /** URL base de la API. Fallback a local para que el sitio nunca renderice `undefined/...`. */
-export const API_URL: string = import.meta.env.PUBLIC_API_URL ?? 'http://localhost:3000'
+export const API_URL: string = import.meta.env.PUBLIC_API_URL ?? 'http://localhost:3200'
 
 export const SITE = {
   name: 'DevKit',
